@@ -13,25 +13,18 @@ export default function Component() {
     password: ''
   });
   const [error, setError] = useState<string | null>(null);
-
-  const handleCredentialsSignIn = async (e: React.FormEvent) => {
+ const handleCredentialsSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try {
-      const response = await axios.post("http://localhost:3000/api/signin", {
-        email: data.email,
-        password: data.password
-      });
-console.log(data.email, data.password);
 
+    const signInResponse = await signIn('credentials', {
+      email:data.email,
+      password:data.password,
+      redirect: false,
+    });
 
-      if (response.status === 200) {
-        // Assume response contains session data
-        router.replace('/photoupload');
-      }
-    } catch (err) {
-      setError('Sign-in failed. Please check your credentials and try again.');
-    }
+   console.log(signInResponse);
+   
   };
 
   if (session) {
