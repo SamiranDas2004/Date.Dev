@@ -5,30 +5,37 @@ import { useSession, signIn, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
-export default function Component() {
-  const { data: session } = useSession();
+export default function SignInComponent() {
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [data, setData] = useState({
     email: '',
     password: ''
   });
   const [error, setError] = useState<string | null>(null);
- const handleCredentialsSignIn = async (e: React.FormEvent) => {
+
+  // Function to handle sign in with credentials
+  const handleCredentialsSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
 
-
+    // Sign in using NextAuth credentials provider
     const signInResponse = await signIn('credentials', {
-      email:data.email,
-      password:data.password,
+      email: data.email,
+      password: data.password,
       redirect: false,
     });
 
-   console.log(signInResponse);
-   
+    if (signInResponse?.error) {
+      setError(signInResponse.error); // Set error message if sign-in fails
+    } else if (signInResponse?.ok) {
+      router.replace('/photoupload'); // Redirect to /photoupload on successful sign-in
+    }
   };
 
-  if (session) {
+  // Redirect if session data exists
+  if (status === 'authenticated') {
     router.replace('/photoupload');
+    return null; // Return null to prevent component rendering while redirecting
   }
 
   return (
@@ -59,7 +66,7 @@ export default function Component() {
           placeholder="Password"
           value={data.password}
           onChange={(e) => setData({ ...data, password: e.target.value })}
-          
+          required
           className="w-full px-4 py-4 mb-4 border border-gray-700 bg-gray-800 rounded-md text-white"
         />
 

@@ -8,16 +8,17 @@ export async function POST(req: NextRequest) {
 
     try {
         const { email, userId } = await req.json();
+const Id=userId.id;
 
         // Validate userId
-        if (!mongoose.Types.ObjectId.isValid(userId)) {
+        if (!mongoose.Types.ObjectId.isValid(Id)) {
             return NextResponse.json({
                 success: false,
                 message: 'Invalid userId format',
             }, { status: 400 });
         }
 
-        const objectId = new mongoose.Types.ObjectId(userId);
+        const objectId = new mongoose.Types.ObjectId(Id);
 
         // Find user by email
         const findUser = await UserModel.findOne({ email });
