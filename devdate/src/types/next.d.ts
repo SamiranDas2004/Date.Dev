@@ -11,6 +11,7 @@ declare module 'http' {
 // Extend NextApiResponse to include `status` method
 declare module 'next' {
   interface NextApiResponse {
+    end: any;
     status(code: number): this;
   }
 }
