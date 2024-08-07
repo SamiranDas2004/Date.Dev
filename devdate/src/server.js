@@ -15,8 +15,8 @@ const io = new Server(server, {
 app.use(cors());
 app.use(express.json());
 
-
 const activeUsers = {};
+console.log("active users",activeUsers);
 
 io.on('connection', (socket) => {
   console.log('a user connected:', socket.id);
@@ -24,14 +24,17 @@ io.on('connection', (socket) => {
   socket.on('joinRoom', (email) => {
     activeUsers[email] = socket.id;
     console.log(`${email} joined with socket ID ${socket.id}`);
+    console.log('Active users:', activeUsers); 
   });
 
   socket.on('sendMessage', ({ fromUser, toUser, message }) => {
     const toSocketId = activeUsers[toUser];
-   
-    
+  
+
     if (toSocketId) {
       io.to(toSocketId).emit('receiveMessage', { fromUser, message });
+    } else {
+      console.log('User not found or not connected:', toUser);
     }
   });
 
@@ -43,6 +46,7 @@ io.on('connection', (socket) => {
       }
     }
     console.log('a user disconnected:', socket.id);
+    console.log('Active users:', activeUsers); // Log active users
   });
 });
 
