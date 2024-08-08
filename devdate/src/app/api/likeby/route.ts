@@ -8,7 +8,9 @@ export async function POST(req: NextRequest) {
 
     try {
         const { email, userId } = await req.json();
-const Id=userId.id;
+        console.log("user info",userId,email);
+        
+const Id=userId;
 
         // Validate userId
         if (!mongoose.Types.ObjectId.isValid(Id)) {

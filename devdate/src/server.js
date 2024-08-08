@@ -3,6 +3,9 @@ const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
 
+const Message = require('./models/messages'); // Ensure the correct import path
+const { default: dbConnect } = require('./lib/dbConnect');
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -16,28 +19,52 @@ app.use(cors());
 app.use(express.json());
 
 const activeUsers = {};
-console.log("active users",activeUsers);
-
+dbConnect()
 io.on('connection', (socket) => {
-  console.log('a user connected:', socket.id);
+  console.log('User connected:', socket.id);
 
-  socket.on('joinRoom', (email) => {
-    activeUsers[email] = socket.id;
-    console.log(`${email} joined with socket ID ${socket.id}`);
-    console.log('Active users:', activeUsers); 
+  // Handle user joining a room
+  socket.on('joinRoom', async (userEmail) => {
+    activeUsers[userEmail] = socket.id;
+    console.log(`${userEmail} joined with socket ID ${socket.id}`);
+
+
+    // Fetch undelivered messages 
+    const undeliveredMessages = await Message.find({
+      toUser: userEmail,
+      delivered: false,
+    }).sort({ timestamp: 1 });
+
+    // Send undelivered messages to the user
+    socket.emit('previousMessages', undeliveredMessages);
+
+    // Mark messages as delivered
+    await Message.updateMany(
+      { toUser: userEmail, delivered: false },
+      { delivered: true }
+    );
   });
 
-  socket.on('sendMessage', ({ fromUser, toUser, message }) => {
-    const toSocketId = activeUsers[toUser];
-  
+  // Handle sending a message
+  socket.on('sendMessage', async ({ fromUser, toUser, message }) => {
+    const newMessage = new Message({ fromUser, toUser, message });
 
-    if (toSocketId) {
-      io.to(toSocketId).emit('receiveMessage', { fromUser, message });
-    } else {
-      console.log('User not found or not connected:', toUser);
+    // Save the message to the database
+    await newMessage.save();
+
+    // Check if the recipient is connected
+    const recipientSocketId = activeUsers[toUser];
+
+    if (recipientSocketId) {
+      // Emit the message to the recipient
+      io.to(recipientSocketId).emit('receiveMessage', newMessage);
+
+      // Mark the message as delivered
+      await Message.findByIdAndUpdate(newMessage._id, { delivered: true });
     }
   });
 
+  // Handle disconnection
   socket.on('disconnect', () => {
     for (const email in activeUsers) {
       if (activeUsers[email] === socket.id) {
@@ -45,11 +72,10 @@ io.on('connection', (socket) => {
         break;
       }
     }
-    console.log('a user disconnected:', socket.id);
-    console.log('Active users:', activeUsers); // Log active users
+    console.log('User disconnected:', socket.id);
   });
 });
 
 server.listen(3001, () => {
-  console.log('listening on *:3001');
+  console.log('Server is listening on *:3001');
 });

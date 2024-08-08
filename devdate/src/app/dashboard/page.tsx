@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-
+import Likedperson from '../likePeople/page'
 function CarouselDemo() {
   const { data: session, status } = useSession();
   const [gender, setGender] = useState<string | undefined>(undefined);
@@ -80,16 +80,19 @@ function CarouselDemo() {
   const likeAPerson = async (email: string) => {
     try {
       const emailId = session?.user.email;
+      console.log(emailId);
+      
       const response = await axios.post('http://localhost:3000/api/getUserId', {
         email: emailId,
       });
-      const userEmail = response.data;
+      const userEmail = response.data.id;
+console.log(userEmail);
 
       const likeResponse = await axios.post(
         'http://localhost:3000/api/likeby',
         {
-          userEmail,
-          email,
+        userId:  userEmail,
+          email: email,
         }
       );
       console.log('like data', likeResponse.data);
@@ -108,33 +111,12 @@ function CarouselDemo() {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white relative">
       <div className="flex-grow flex flex-col items-center justify-center p-6 bg-gray-800 bg-opacity-80 rounded-lg shadow-lg">
+     
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: 'url()' }}>
           {' '}
-          <div className="overflow-y-auto w-1/3 h-screen bg-gray-800 p-4" style={{ maxHeight: '100vh' }}>
-            <div className="text-center mb-4">Scrollable Content</div>
-            <ul className="space-y-4">
-              {userInfo.map((user) => (
-                <li key={user.email} className="space-y-2">
-                  <img
-                    src={user.photos[0]}
-                    alt={user.username}
-                    className="w-full h-auto mt-2"
-                  />
-                  <button
-                    onClick={() => router.replace(`/chat?userEmail=${session?.user.email}&targetUserEmail=${user.email}`)}
-                    className="bg-red-600 mt-2 px-4 py-2 rounded-lg hover:bg-red-700 focus:outline-none"
-                  >
-                   
-                   Message
-                     </button>
-                     <div>{user.username}</div>
-                     <div>{user.email}</div>
-                   </li>
-                 ))}
-               </ul>
-             </div>
+        <Likedperson/>
            </div>
 
            <div className="relative z-10 flex space-x-4 mb-6">
