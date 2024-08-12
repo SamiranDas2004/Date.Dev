@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { socket } from '../../utils/socket';
 import Likedperson from '../likePeople/page';
+import axios from 'axios';
 
 interface Message {
   fromUser: string;
@@ -19,46 +20,66 @@ const Chat: React.FC = () => {
 
   useEffect(() => {
     if (userEmail) {
-      // Join the user's room
       socket.emit('joinRoom', userEmail);
 
-      // Listen for previous undelivered messages
-      socket.on('previousMessages', (previousMessages: Message[]) => {
-        setMessages((prevMessages) => [...prevMessages, ...previousMessages]);
-      });
-
-      // Listen for new messages
       socket.on('receiveMessage', ({ fromUser, message }: Message) => {
         setMessages((prevMessages) => [...prevMessages, { fromUser, message }]);
       });
 
-      // Clean up listeners on component unmount
+      
       return () => {
-        socket.off('previousMessages');
         socket.off('receiveMessage');
       };
     }
+
   }, [userEmail]);
 
-  const sendMessage = () => {
-    if (message.trim() !== '' && userEmail && targetUserEmail) {
-      // Emit the message to the server
-      socket.emit('sendMessage', { fromUser: userEmail, toUser: targetUserEmail, message });
+  useEffect(()=>{
+const recivedMessage=async()=>{
+try {
+    const response = await axios.post("http://localhost:3000/api/recivesavedmassages", {
+      fromUser: userEmail,
+      toUser: targetUserEmail,
+   
+    });
+    console.log(response.data);
+} catch (error:any) {
+  console.log(error);
+  
+}
+}
+recivedMessage()
+  },[])
 
-      // Immediately display the message on the sender's screen
+  const sendMessage = async () => {
+    if (message.trim() !== '' && userEmail && targetUserEmail) {
+      socket.emit('sendMessage', { fromUser: userEmail, toUser: targetUserEmail, message });
       setMessages((prevMessages) => [...prevMessages, { fromUser: userEmail, message }]);
-      setMessage('');
+      
+      try {
+        const response = await axios.post("http://localhost:3000/api/savemessages", {
+          fromUser: userEmail,
+          toUser: targetUserEmail,
+          message: message, // 
+        });
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error sending message to server:", error);
+      }
+
+      setMessage(''); // Clear the input field after sending the message
     }
   };
 
   return (
     <div className="flex flex-col h-screen p-0 bg-gray-800">
-      <div className="flex flex-1">
-        <div className="w-1/3">
-          <Likedperson />
-        </div>
-        <div className="w-2/3 flex flex-col">
-          <div className="flex-1 overflow-y-auto p-4 border border-gray-300 rounded-lg bg-gray-800 shadow-md">
+    <div className="flex flex-1">
+      <div className="w-1/3">
+        <Likedperson />
+      </div>
+      <div className="w-2/3 flex flex-col">
+        <div className="flex-1 p-4 border border-gray-300 rounded-lg bg-gray-800 shadow-md flex flex-col">
+          <div className="overflow-y-auto h-full">
             {messages.map((msg, index) => (
               <div
                 key={index}
@@ -74,25 +95,28 @@ const Chat: React.FC = () => {
               </div>
             ))}
           </div>
-          <div className="flex gap-2 mt-2 p-4">
-            <input
-              type="text"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-              className="flex-1 p-3 border border-gray-300 rounded-lg bg-gray-800 text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Type a message..."
-            />
-            <button
-              onClick={sendMessage}
-              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-150 ease-in-out"
-            >
-              Send
-            </button>
-          </div>
+        </div>
+        <div className="flex gap-2 mt-2 p-4">
+          <input
+            type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+            className="flex-1 p-3 border border-gray-300 rounded-lg bg-gray-800 text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Type a message..."
+          />
+          <button
+            onClick={sendMessage}
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-150 ease-in-out"
+          >
+            Send
+          </button>
         </div>
       </div>
     </div>
+  </div>
+  
+  
   );
 };
 
