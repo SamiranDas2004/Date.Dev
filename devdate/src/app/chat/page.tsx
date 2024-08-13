@@ -26,7 +26,7 @@ const Chat: React.FC = () => {
       socket.on('receiveMessage', ({ fromUser, message }: Message) => {
         setMessages((prevMessages) => [
           ...prevMessages,
-          { fromUser, message, timestamp: new Date().toISOString() }
+          { fromUser, message, timestamp: new Date().toISOString() },
         ]);
       });
 
@@ -50,10 +50,40 @@ const Chat: React.FC = () => {
         const recMessages = Array.isArray(receivedMessages) ? receivedMessages : [];
         const sMessages = Array.isArray(sentMessages) ? sentMessages : [];
 
-        // Combine both arrays and sort by timestamp
-        const allMessages = [...recMessages, ...sMessages].sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+        // Add individual messages from recMessages
+        recMessages.forEach((msg) => {
+          if (Array.isArray(msg.message)) {
+            msg.message.forEach((individualMessage: string) => {
+              setMessages((prevMessages) => [
+                ...prevMessages,
+                { fromUser: msg.fromUser, message: individualMessage, timestamp: msg.timestamp },
+              ]);
+            });
+          } else {
+            setMessages((prevMessages) => [
+              ...prevMessages,
+              { fromUser: msg.fromUser, message: msg.message, timestamp: msg.timestamp },
+            ]);
+          }
+        });
 
-        setMessages(allMessages);
+        // Add individual messages from sMessages
+        sMessages.forEach((msg) => {
+          if (Array.isArray(msg.message)) {
+            msg.message.forEach((individualMessage: string) => {
+              setMessages((prevMessages) => [
+                ...prevMessages,
+                { fromUser: msg.fromUser, message: individualMessage, timestamp: msg.timestamp },
+              ]);
+            });
+          } else {
+            setMessages((prevMessages) => [
+              ...prevMessages,
+              { fromUser: msg.fromUser, message: msg.message, timestamp: msg.timestamp },
+            ]);
+          }
+        });
+
       } catch (error: any) {
         console.log(error);
       }
