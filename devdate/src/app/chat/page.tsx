@@ -100,9 +100,11 @@ const Chat: React.FC = () => {
         timestamp: new Date().toISOString(),
       };
 
-      socket.emit('sendMessage', newMessage);
+     
       setMessages((prevMessages) => [...prevMessages, newMessage]);
-
+      socket.emit('sendMessage', newMessage);
+      console.log(newMessage);
+      
       try {
         const response = await axios.post("http://localhost:3000/api/savemessages", newMessage);
         console.log(response.data);
