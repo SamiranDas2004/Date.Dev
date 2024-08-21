@@ -5,7 +5,7 @@ import AuthProvider from "@/context/AuthProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
-
+import Header from "./header/page";
 
 export default function RootLayout({
   children,
@@ -15,7 +15,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <AuthProvider>
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+      <div className="">
+        <Header/>
+       </div>{children}</body>
       </AuthProvider>
     </html>
   );

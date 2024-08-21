@@ -7,49 +7,66 @@ export interface User extends Document {
   messages: mongoose.Types.ObjectId[];
   followers: mongoose.Types.ObjectId[];
   avatar: string;
-  gender:string;
-  photos: string[]; 
-  likeby:mongoose.Types.ObjectId[];
+  gender: string;
+  photos: string[];
+  likeby: mongoose.Types.ObjectId[];
+  dislikeby: mongoose.Types.ObjectId[];
 }
-
 const UserSchema: Schema<User> = new Schema({
   username: {
     type: String,
-    required: [true, 'Username is required'],
+    required: [true, "Username is required"],
     trim: true,
-   
   },
   email: {
     type: String,
-    required: [true, 'Email is required'],
-    match: [/.+\@.+\..+/, 'Please use a valid email address'],
+    required: [true, "Email is required"],
+    match: [/.+\@.+\..+/, "Please use a valid email address"],
     unique: true,
   },
   password: {
     type: String,
   },
   photos: [String], // Updated to store an array of photo URLs
-  messages: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Message'
-  }],
-  followers: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    default: [],
-  }],
+  messages: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Message",
+    },
+  ],
+  followers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: [],
+    },
+  ],
   avatar: {
     type: String,
   },
-  gender:{
-    type:String
+  dislikeby: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: [],
+    },
+  ],
+  gender: {
+    type: String,
   },
-  likeby:[{
-type:mongoose.Schema.Types.ObjectId,
-ref:"User"
-  }]
+  likeby: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: [],
+    },
+  ],
+
 });
 
-const UserModel = (mongoose.models.User as Model<User>) || mongoose.model<User>('User', UserSchema);
+
+const UserModel =
+  (mongoose.models.User as Model<User>) ||
+  mongoose.model<User>("User", UserSchema);
 
 export default UserModel;

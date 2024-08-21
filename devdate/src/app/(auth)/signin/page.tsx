@@ -25,12 +25,20 @@ export default function SignInComponent() {
       redirect: false,
     });
 
+    console.log(signInResponse);
+    
     if (signInResponse?.error) {
       setError(signInResponse.error); // Set error message if sign-in fails
     } else if (signInResponse?.ok) {
-      router.replace('/photoupload'); // Redirect to /photoupload on successful sign-in
+      router.replace('/dashboard'); // Redirect to /photoupload on successful sign-in
     }
   };
+  const handelKeyDown=(e:any)=>{
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      document.getElementById('uploadButton')?.click();
+    }
+  }
 
   // Redirect if session data exists
   if (status === 'authenticated') {
@@ -40,7 +48,7 @@ export default function SignInComponent() {
 
   return (
     <div
-    className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white bg-cover bg-center bg-no-repeat"
+    className="flex flex-col h-[91vh] items-center justify-center  bg-gray-900 text-white bg-cover bg-center bg-no-repeat"
     style={{ 
       backgroundImage: "url('https://res.cloudinary.com/dfjfjovut/image/upload/v1724152514/yjtiwbomeqmzwmtnwwjx.png')",
       backgroundSize: '', // Ensures the image covers the container
@@ -53,6 +61,7 @@ export default function SignInComponent() {
     <form
       className="w-full max-w-md text-xl font-semibold flex flex-col bg-white bg-opacity-75 p-6 rounded-lg"
       onSubmit={handleCredentialsSignIn}
+      onKeyDown={handelKeyDown}
     >
       {error && (
         <span className="p-4 mb-2 text-lg font-semibold text-white bg-red-600 rounded-md">
@@ -81,6 +90,7 @@ export default function SignInComponent() {
     
       <button
         type="submit"
+        id='uploadButton'
         className="w-full h-12 px-6 mt-4 text-lg font-semibold text-white bg-blue-600 rounded-lg transition-colors duration-150 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
       >
         Log in

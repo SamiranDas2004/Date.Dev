@@ -44,8 +44,9 @@ export default function Likedperson() {
   }
   return (
     <div>
-   <div className="overflow-y-auto w-1/3 h-screen bg-pink-200 p-4" style={{ maxHeight: '100vh' }}>
-            <div className="text-center mb-4">Scrollable Content</div>
+   <div className="overflow-y-auto bg-white w-1/3 h-screen  p-4" style={{ maxHeight: '100vh' }}>
+            <div className="text-center font-bold text-3xl mb-4 shadow-lg">Matches</div>
+            
             <ul className="space-y-4">
               {userInfo.map((user) => (
                 <li key={user.email} className="space-y-2">
@@ -54,15 +55,24 @@ export default function Likedperson() {
                     alt={user.username}
                     className="w-full h-auto mt-2"
                   />
-                  <button
+                <div className=' flex justify-center items-center'>
+                <button
                     onClick={() => router.replace(`/chat?userEmail=${session?.user.email}&targetUserEmail=${user.email}`)}
-                    className="bg-red-600 mt-2 px-4 py-2 rounded-lg hover:bg-red-700 focus:outline-none"
+                    className="bg-blue-400 mt-2 px-4 font-bold  py-2 rounded-lg hover:bg-red-700 focus:outline-none"
                   >
                    
                    Message
                      </button>
-                     <div>{user.username}</div>
-                     <div>{user.email}</div>
+
+                     <button
+                     
+                    onClick={() => router.replace(`/chat?userEmail=${session?.user.email}&targetUserEmail=${user.email}`)}
+                    className="bg-red-600 mt-2 font-bold  px-4 py-2 ml-8 rounded-lg hover:bg-red-700 focus:outline-none"
+                  >
+                   
+                  Reject
+                     </button>
+                </div>
                    </li>
                  ))}
                </ul>
