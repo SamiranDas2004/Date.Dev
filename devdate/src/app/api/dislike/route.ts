@@ -9,17 +9,6 @@ export async function POST(req: NextRequest) {
 
     const Id = userId;
 
-    // Validate userId
-    if (!mongoose.Types.ObjectId.isValid(Id)) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Invalid userId format",
-        },
-        { status: 400 }
-      );
-    }
-
     const findUser = await UserModel.findOne({ email });
     if (!findUser) {
       return NextResponse.json(
@@ -31,15 +20,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const objectId = new mongoose.Types.ObjectId(Id);
+ 
 
     if (!findUser.dislikeby) {
       findUser.dislikeby = [];
     }
 
     // Update dislikeby array
-    if (!findUser.dislikeby.includes(objectId)) {
-      findUser.dislikeby.push(objectId);
+    if (!findUser.dislikeby.includes(Id)) {
+      findUser.dislikeby.push(Id);
     }
 
     await findUser.save();

@@ -10,7 +10,7 @@ export interface User extends Document {
   gender: string;
   photos: string[];
   likeby: mongoose.Types.ObjectId[];
-  dislikeby: mongoose.Types.ObjectId[];
+  dislikeby: string[]
 }
 const UserSchema: Schema<User> = new Schema({
   username: {
@@ -44,13 +44,7 @@ const UserSchema: Schema<User> = new Schema({
   avatar: {
     type: String,
   },
-  dislikeby: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      default: [],
-    },
-  ],
+  dislikeby: [String],
   gender: {
     type: String,
   },
