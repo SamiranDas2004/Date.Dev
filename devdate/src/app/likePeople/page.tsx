@@ -1,16 +1,14 @@
 'use client';
 
 import * as React from 'react';
-
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 
-
 export default function Likedperson() {
   const { data: session, status } = useSession();
-const [accept,setAccept]=useState("accpept")
+  const [accept, setAccept] = useState("accept");
   const [userInfo, setUserInfo] = useState<any[]>([]);
   const router = useRouter();
 
@@ -20,7 +18,7 @@ const [accept,setAccept]=useState("accpept")
         try {
           const response = await axios.post(
             'http://localhost:3000/api/getMatches',
-            { email: session.user.email } 
+            { email: session.user.email }
           );
           setUserInfo(response.data.data);
           console.log(response.data);
@@ -32,51 +30,61 @@ const [accept,setAccept]=useState("accpept")
     }
   }, [session]);
 
-const changeState=(value:string)=>{
-  setAccept(value)
-}
-  
- 
+  const changeState = (value: string) => {
+    setAccept(value);
+  };
+
+  const reject = async (id: any) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/reject",
+        { email: session?.user.email, id: id }
+      );
+      console.log(response.data);
+
+      // Remove the rejected user from the userInfo state
+      setUserInfo((prevUserInfo) => prevUserInfo.filter((user) => user._id !== id));
+    } catch (error) {
+      console.error('Error rejecting match:', error);
+    }
+  };
 
   if (status === 'loading') {
     return <p>Loading...</p>;
   }
+
   return (
     <div>
-   <div className="overflow-y-auto bg-white w-1/3 h-screen  p-4" style={{ maxHeight: '100vh' }}>
-            <div className="text-center font-bold text-3xl mb-4 shadow-lg">Matches</div>
-            
-            <ul className="space-y-4">
-              {userInfo.map((user) => (
-                <li key={user.email} className="space-y-2">
-                  <img
-                    src={user.photos[0]}
-                    alt={user.username}
-                    className="w-full h-auto mt-2"
-                  />
-                <div className=' flex justify-center items-center'>
-                <button
-                onClick={()=>changeState("Accepted")}
-                    // onClick={() => router.replace(`/chat?userEmail=${session?.user.email}&targetUserEmail=${user.email}`)}
-                     className="bg-blue-400 mt-2 px-4 font-bold  py-2 rounded-lg hover:bg-red-700 focus:outline-none"
-                  >
-                   
-                   {accept}
-                     </button>
+      <div className="overflow-y-auto bg-white w-1/3 h-screen p-4" style={{ maxHeight: '100vh' }}>
+        <div className="text-center font-bold text-3xl mb-4 shadow-lg">Matches</div>
 
-                     <button
-                     
-                    onClick={() => router.replace(`/chat?userEmail=${session?.user.email}&targetUserEmail=${user.email}`)}
-                    className="bg-red-600 mt-2 font-bold  px-4 py-2 ml-8 rounded-lg hover:bg-red-700 focus:outline-none"
-                  >
-                   
+        <ul className="space-y-4">
+          {userInfo.map((user) => (
+            <li key={user.email} className="space-y-2">
+              <img
+                src={user.photos[0]}
+                alt={user.username}
+                className="w-full h-auto mt-2"
+              />
+              <div className='flex justify-center items-center'>
+                <button
+                  onClick={() => changeState("Accepted")}
+                  className="bg-blue-400 mt-2 px-4 font-bold py-2 rounded-lg hover:bg-red-700 focus:outline-none"
+                >
+                  {accept}
+                </button>
+
+                <button
+                  onClick={() => reject(user._id)}
+                  className="bg-red-600 mt-2 font-bold px-4 py-2 ml-8 rounded-lg hover:bg-red-700 focus:outline-none"
+                >
                   Reject
-                     </button>
-                </div>
-                   </li>
-                 ))}
-               </ul>
-             </div>
+                </button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
-  )
+  );
 }
