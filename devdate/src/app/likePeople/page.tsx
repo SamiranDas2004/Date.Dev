@@ -10,10 +10,7 @@ import { useRouter } from 'next/navigation';
 
 export default function Likedperson() {
   const { data: session, status } = useSession();
-  const [gender, setGender] = useState<string | undefined>(undefined);
-  const [users, setUsers] = useState<any[]>([]);
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const [photoIndex, setPhotoIndex] = useState<number>(0);
+const [accept,setAccept]=useState("accpept")
   const [userInfo, setUserInfo] = useState<any[]>([]);
   const router = useRouter();
 
@@ -35,7 +32,9 @@ export default function Likedperson() {
     }
   }, [session]);
 
-
+const changeState=(value:string)=>{
+  setAccept(value)
+}
   
  
 
@@ -57,11 +56,12 @@ export default function Likedperson() {
                   />
                 <div className=' flex justify-center items-center'>
                 <button
-                    onClick={() => router.replace(`/chat?userEmail=${session?.user.email}&targetUserEmail=${user.email}`)}
-                    className="bg-blue-400 mt-2 px-4 font-bold  py-2 rounded-lg hover:bg-red-700 focus:outline-none"
+                onClick={()=>changeState("Accepted")}
+                    // onClick={() => router.replace(`/chat?userEmail=${session?.user.email}&targetUserEmail=${user.email}`)}
+                     className="bg-blue-400 mt-2 px-4 font-bold  py-2 rounded-lg hover:bg-red-700 focus:outline-none"
                   >
                    
-                   Message
+                   {accept}
                      </button>
 
                      <button

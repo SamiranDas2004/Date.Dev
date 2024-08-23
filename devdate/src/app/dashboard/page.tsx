@@ -25,13 +25,11 @@ function CarouselDemo() {
       const response = await axios.post('http://localhost:3000/api/findgenders', { gender: value });
       console.log('Response data from findgenders:', response.data);
   
-      // Assuming the data comes as an object with the array under a property, adjust accordingly
-      const dataArray = Array.isArray(response.data) ? response.data : response.data?.users || [];
-  console.log(dataArray);
+ 
   
       const result = await axios.post('http://localhost:3000/api/notinclude', {
         email: session?.user.email,
-        data: dataArray // Ensure this is an array
+        data: response.data.data // Ensure this is an array
       });
   
       console.log('Response data from notinclude:', result.data);
@@ -90,9 +88,11 @@ function CarouselDemo() {
         email: email,
       });
       console.log('like data', likeResponse.data);
-      if (likeResponse.data.match) {
-        router.replace(`/chat?userEmail=${userId}&targetUserEmail=${likeResponse.data.targetUserEmail}`);
-      }
+      // if (likeResponse.data.match) {
+      //   router.replace(`/chat?userEmail=${userId}&targetUserEmail=${likeResponse.data.targetUserEmail}`);
+      // }
+
+      
     } catch (error) {
       console.error('Error liking person:', error);
     }
@@ -109,6 +109,7 @@ function CarouselDemo() {
       });
 
       console.log(response.data);
+      handleNextUser()
     } catch (error: any) {
       console.error(error.message);
     }
