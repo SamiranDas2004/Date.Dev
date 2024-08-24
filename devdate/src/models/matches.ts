@@ -8,7 +8,7 @@ export interface Matches extends Document {
 
 // Define the Matches Schema
 const MatchesSchema: Schema<Matches> = new Schema({
-  likeBy:[ {
+  likeBy: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,
@@ -19,6 +19,7 @@ const MatchesSchema: Schema<Matches> = new Schema({
     required: true,
   },
 });
+
 
 // Define and export the Matches Model
 const MatchesModel =

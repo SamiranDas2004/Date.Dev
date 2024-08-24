@@ -21,6 +21,7 @@ function Header() {
     
     const signup = () => {
         router.replace('/signup');
+        
     }
 
     const matches=()=>{
@@ -68,7 +69,7 @@ function Header() {
                 className="rounded-md bg-gray-100 px-5 py-2.5 text-sm font-medium text-teal-600"
                 onClick={signup}
               >
-                Register
+                Signup
               </button>
             </div>
           </div>

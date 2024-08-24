@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "concurrently \"next dev\" \"node src/server.js\"",
     "build": "next build",
     "lint": "next lint",
     "start": "node src/server.js"
@@ -24,6 +24,7 @@
     "next-auth": "^4.24.7",
     "react": "^18",
     "react-dom": "^18",
+    "react-spinners": "^0.14.1",
     "socket.io": "^4.7.5",
     "socket.io-client": "^4.7.5",
     "streamifier": "^0.1.1",
@@ -38,6 +39,7 @@
     "@types/react-dom": "^18",
     "@types/socket.io": "^3.0.2",
     "@types/streamifier": "^0.1.2",
+    "concurrently": "^8.2.2",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "postcss": "^8",

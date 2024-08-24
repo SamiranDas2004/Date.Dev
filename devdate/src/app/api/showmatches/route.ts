@@ -8,6 +8,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const { email } = await req.json();
+console.log("email",email);
 
     // Find the user by email
     const findUser = await UserModel.findOne({ email });
@@ -21,7 +22,6 @@ export async function POST(req: NextRequest) {
         }
       );
     }
-
     // Find all matches where the user is liked by others
     const findMatches = await MatchesModel.find({ likeTO: findUser._id });
     if (!findMatches.length) {
@@ -30,10 +30,11 @@ export async function POST(req: NextRequest) {
           message: "No matches for this user",
         },
         {
-          status: 400,
+          status: 200,
         }
       );
     }
+console.log("data",findMatches);
 
     // Collect all users who liked the current user
     let showAllMatches = [];
@@ -47,6 +48,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         data: showAllMatches,
+        user:findUser
       },
       {
         status: 200,
