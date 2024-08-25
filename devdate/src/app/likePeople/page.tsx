@@ -22,6 +22,7 @@ export default function Likedperson() {
             'http://localhost:3000/api/getMatches',
             { email: session.user.email }
           );
+          
           setUserInfo(response.data.data);
           console.log(response.data);
         } catch (error) {
@@ -55,11 +56,16 @@ export default function Likedperson() {
         "http://localhost:3000/api/bothmatches",
         { email: session?.user.email, id: id }
       );
+      const response2=await axios.post("http://localhost:3000/api/showmatchesofmyside",{email:session?.user.email,id:id})
+      console.log(response2.data);
+      
       console.log(response.data);
     } catch (error: any) {
       console.log("Something went wrong", error);
     }
   };
+
+  
 
   return (
     <div>
@@ -82,6 +88,7 @@ export default function Likedperson() {
                 <div className='flex justify-center items-center'>
                   <button
                     onClick={() => bothMatched(user._id)}
+
                     className="bg-blue-400 mt-2 px-4 font-bold py-2 rounded-lg hover:bg-red-700 focus:outline-none"
                   >
                     Accept

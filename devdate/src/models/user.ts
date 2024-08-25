@@ -10,8 +10,10 @@ export interface User extends Document {
   gender: string;
   photos: string[];
   likeby: mongoose.Types.ObjectId[];
-  dislikeby: string[]
+  dislikeby: string[];
+  matches: string[];
 }
+
 const UserSchema: Schema<User> = new Schema({
   username: {
     type: String,
@@ -55,9 +57,8 @@ const UserSchema: Schema<User> = new Schema({
       default: [],
     },
   ],
-
+  matches: [String],
 });
-
 
 const UserModel =
   (mongoose.models.User as Model<User>) ||

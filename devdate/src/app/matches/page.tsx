@@ -3,36 +3,37 @@ import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-// Import a spinner (optional)
-// import { ClipLoader } from 'react-spinners';
 
 function Page() {
   const [userInfo, setUserInfo] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true); 
   const { data: session } = useSession();
-const router=useRouter()
+  const [myInfo, setMyInfo] = useState<string[]>([]);
+  const router = useRouter();
+
   useEffect(() => {
     if (session?.user?.email) {
       const getMatches = async () => {
         try {
-          setLoading(true); // Start loading
+          setLoading(true);
           const response = await axios.post("http://localhost:3000/api/showmatches", { email: session.user.email });
-          console.log(session.user.email);
-          console.log(response.data);
+          const res = await axios.post("http://localhost:3000/api/getthefuckingmatches", { email: session.user.email });
+          setMyInfo(res.data.data); 
           setUserInfo(response.data.data);
         } catch (error: any) {
           console.log(error);
         } finally {
-          setLoading(false); // Stop loading
+          setLoading(false);
         }
       };
+
       getMatches();
     }
   }, [session]);
 
-  const handelNavigate=(email:any)=>{
-    router.replace(`/chat?userEmail=${session?.user.email}&targetUserEmail=${email}`)}
-  
+  const handleNavigate = (email: string) => {
+    router.replace(`/chat?userEmail=${session?.user.email}&targetUserEmail=${email}`);
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center py-10">
@@ -42,14 +43,11 @@ const router=useRouter()
         </h2>
         {loading ? (
           <div className="flex justify-center items-center">
-            {/* Add your spinner here */}
             <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-900"></div>
-            {/* Or use a spinner from a library */}
-            {/* <ClipLoader size={50} color={"#123abc"} loading={loading} /> */}
           </div>
         ) : (
           <ul className="space-y-6">
-            {Array.isArray(userInfo)&&userInfo.length > 0 ? (
+            {Array.isArray(userInfo) && userInfo.length > 0 ? (
               userInfo.map((user) => (
                 <li key={user.email} className="bg-gray-50 p-4 rounded-lg shadow-md flex items-center justify-between">
                   <div className="flex items-center space-x-4">
@@ -63,7 +61,7 @@ const router=useRouter()
                       <p className="text-sm text-gray-500">{user.email}</p>
                     </div>
                   </div>
-                  <button onClick={()=>handelNavigate(user.email) } className="text-2xl">↗️</button>
+                  <button onClick={() => handleNavigate(user.email)} className="text-2xl">↗️</button>
                 </li>
               ))
             ) : (
@@ -71,6 +69,34 @@ const router=useRouter()
             )}
           </ul>
         )}
+      </div>
+
+      {/* People You Like Section */}
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl mt-6">
+        <h2 className="text-2xl font-semibold mb-6 text-center text-gray-800">
+          People You Like
+        </h2>
+        {loading ? (
+          <div className="flex justify-center items-center">
+            <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-900"></div>
+          </div>
+        ) : (
+        <ul className="space-y-6">
+          {Array.isArray(myInfo) && myInfo.length > 0 ? (
+            myInfo.map((imgUrl, index) => (
+              <li key={index} className="flex justify-center">
+                <img
+                  src={imgUrl}
+                  alt={`Liked person ${index + 1}`}
+                  className="w-32 h-32 object-cover rounded-full border-2 border-gray-300"
+                />
+              </li>
+            ))
+          ) : (
+            <p className="text-center text-gray-500">No liked people found.</p>
+          )}
+        </ul>
+)}
       </div>
     </div>
   );
