@@ -48,7 +48,7 @@ console.log("data",findMatches);
     return NextResponse.json(
       {
         data: showAllMatches,
-        user:findUser
+        // user:findUser
       },
       {
         status: 200,

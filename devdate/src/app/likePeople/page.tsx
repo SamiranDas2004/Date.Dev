@@ -65,7 +65,7 @@ export default function Likedperson() {
     }
   };
 
-  
+
 
   return (
     <div>
@@ -88,7 +88,6 @@ export default function Likedperson() {
                 <div className='flex justify-center items-center'>
                   <button
                     onClick={() => bothMatched(user._id)}
-
                     className="bg-blue-400 mt-2 px-4 font-bold py-2 rounded-lg hover:bg-red-700 focus:outline-none"
                   >
                     Accept

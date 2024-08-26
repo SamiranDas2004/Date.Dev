@@ -19,6 +19,8 @@ function Page() {
           const response = await axios.post("http://localhost:3000/api/showmatches", { email: session.user.email });
           const res = await axios.post("http://localhost:3000/api/getthefuckingmatches", { email: session.user.email });
           setMyInfo(res.data.data); 
+          console.log(response.data);
+          
           setUserInfo(response.data.data);
         } catch (error: any) {
           console.log(error);

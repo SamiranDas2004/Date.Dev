@@ -25,6 +25,7 @@ function CarouselDemo() {
       const response = await axios.post('http://localhost:3000/api/findgenders', { gender: value });
       console.log('Response data from findgenders:', response.data);
   
+ console.log(response.data,session?.user.email);
  
   
       const result = await axios.post('http://localhost:3000/api/notinclude', {
