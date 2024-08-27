@@ -85,6 +85,7 @@ export default function Likedperson() {
                   alt={user.username}
                   className="w-full h-auto mt-2"
                 />
+                <p>{user.username}</p>
                 <div className='flex justify-center items-center'>
                   <button
                     onClick={() => bothMatched(user._id)}

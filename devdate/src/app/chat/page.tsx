@@ -155,7 +155,7 @@ const [another,setAnother]=useState<any[]>([])
           );
           setUserInfo(response.data.data);
           setAnother(res.data.data)
-          // console.log("data2", response);
+          console.log("data2", response);
         } catch (error) {
           console.log(error);
         }
@@ -175,17 +175,17 @@ const [another,setAnother]=useState<any[]>([])
        className="w-20 h-20 rounded-full object-cover border-2 border-gray-600"
       src={user.photos[0]} alt={user.username} />
     ) : (
-      <div> "</div> // Or a placeholder image
+      <div></div> // Or a placeholder image
     )}
   </div>
 ))}
  {Array.isArray(another) && another.length > 0 ? (
             another.map((imgUrl, index) => (
-              <li key={index} className="flex justify-center">
+              <li key={index} className="">
                 <img
                   src={imgUrl}
                   alt={`Liked person ${index + 1}`}
-                  className="w-32 h-32 object-cover rounded-full border-2 border-gray-300"
+                  className="w-20 h-20 rounded-full object-cover border-2 border-gray-600"
                 />
               </li>
             ))
