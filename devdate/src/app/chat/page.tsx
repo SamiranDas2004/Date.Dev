@@ -1,15 +1,15 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { socket } from "../../utils/socket";
-import Likedperson from "../likePeople/page";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface Message {
   fromUser: string;
   message: string;
-  timestamp: string;
+  timestamp: Date;
 }
 
 const Chat: React.FC = () => {
@@ -20,7 +20,18 @@ const Chat: React.FC = () => {
   const [userInfo, setUserInfo] = useState<any[]>([]);
   const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
-const [another,setAnother]=useState<any[]>([])
+  const [another, setAnother] = useState<any[]>([]);
+  const router = useRouter();
+
+  // Ref for the chat messages container to enable auto-scrolling
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to the bottom when messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  // Join the room and handle incoming messages
   useEffect(() => {
     if (userEmail) {
       socket.emit("joinRoom", userEmail);
@@ -28,7 +39,7 @@ const [another,setAnother]=useState<any[]>([])
       socket.on("receiveMessage", ({ fromUser, message }: Message) => {
         setMessages((prevMessages) => [
           ...prevMessages,
-          { fromUser, message, timestamp: new Date().toISOString() },
+          { fromUser, message, timestamp: new Date() },
         ]);
       });
 
@@ -38,6 +49,7 @@ const [another,setAnother]=useState<any[]>([])
     }
   }, [userEmail]);
 
+  // Fetch saved messages from the server
   useEffect(() => {
     const fetchMessages = async () => {
       try {
@@ -51,80 +63,80 @@ const [another,setAnother]=useState<any[]>([])
 
         const { receivedMessages, sentMessages } = response.data;
 
-        // Ensure both receivedMessages and sentMessages are arrays
-        const recMessages = Array.isArray(receivedMessages)
-          ? receivedMessages
-          : [];
-        const sMessages = Array.isArray(sentMessages) ? sentMessages : [];
+        const allMessages: Message[] = [];
 
-        // Add individual messages from recMessages
-        recMessages.forEach((msg) => {
+        // Process received messages
+        receivedMessages.forEach((msg: any) => {
           if (Array.isArray(msg.message)) {
             msg.message.forEach((individualMessage: string) => {
-              setMessages((prevMessages) => [
-                ...prevMessages,
-                {
-                  fromUser: msg.fromUser,
-                  message: individualMessage,
-                  timestamp: msg.timestamp,
-                },
-              ]);
+              allMessages.push({
+                fromUser: msg.fromUser,
+                message: individualMessage,
+                timestamp: new Date(msg.timestamp),
+              });
             });
           } else {
-            setMessages((prevMessages) => [
-              ...prevMessages,
-              {
-                fromUser: msg.fromUser,
-                message: msg.message,
-                timestamp: msg.timestamp,
-              },
-            ]);
+            allMessages.push({
+              fromUser: msg.fromUser,
+              message: msg.message,
+              timestamp: new Date(msg.timestamp),
+            });
           }
         });
 
-        // Add individual messages from sMessages
-        sMessages.forEach((msg) => {
+        // Process sent messages
+        sentMessages.forEach((msg: any) => {
           if (Array.isArray(msg.message)) {
             msg.message.forEach((individualMessage: string) => {
-              setMessages((prevMessages) => [
-                ...prevMessages,
-                {
-                  fromUser: msg.fromUser,
-                  message: individualMessage,
-                  timestamp: msg.timestamp,
-                },
-              ]);
+              allMessages.push({
+                fromUser: msg.fromUser,
+                message: individualMessage,
+                timestamp: new Date(msg.timestamp),
+              });
             });
           } else {
-            setMessages((prevMessages) => [
-              ...prevMessages,
-              {
-                fromUser: msg.fromUser,
-                message: msg.message,
-                timestamp: msg.timestamp,
-              },
-            ]);
+            allMessages.push({
+              fromUser: msg.fromUser,
+              message: msg.message,
+              timestamp: new Date(msg.timestamp),
+            });
           }
         });
+
+        // Sort messages by timestamp
+        allMessages.sort(
+          (a, b) => a.timestamp.getTime() - b.timestamp.getTime()
+        );
+
+        // Set the sorted messages
+        setMessages(allMessages);
       } catch (error: any) {
-        console.log(error);
+        console.log("Error fetching or sorting messages:", error);
       }
     };
+
     fetchMessages();
   }, [userEmail, targetUserEmail]);
 
+  // Handle navigation to a different chat
+  const handleNavigate = (email: string) => {
+    router.replace(
+      `/chat?userEmail=${session?.user.email}&targetUserEmail=${email}`
+    );
+  };
+
+  // Send a new message
   const sendMessage = async () => {
     if (message.trim() !== "" && userEmail && targetUserEmail) {
       const newMessage = {
         fromUser: userEmail,
         toUser: targetUserEmail,
         message: message,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date(),
       };
 
       setMessages((prevMessages) => [...prevMessages, newMessage]);
       socket.emit("sendMessage", newMessage);
-      console.log(newMessage);
 
       try {
         const response = await axios.post(
@@ -140,11 +152,11 @@ const [another,setAnother]=useState<any[]>([])
     }
   };
 
+  // Fetch matched users and their photos
   useEffect(() => {
     if (status === "authenticated" && session?.user?.email) {
       const Showpeople = async () => {
         try {
-          console.log(session.user.email);
           const response = await axios.post(
             "http://localhost:3000/api/showmatches",
             { email: session.user.email }
@@ -154,8 +166,9 @@ const [another,setAnother]=useState<any[]>([])
             { email: session.user.email }
           );
           setUserInfo(response.data.data);
-          setAnother(res.data.data)
-          console.log("data2", response);
+          setAnother(res.data.data);
+          console.log("data",res.data.username);
+          
         } catch (error) {
           console.log(error);
         }
@@ -167,37 +180,41 @@ const [another,setAnother]=useState<any[]>([])
   return (
     <div className="grid grid-cols-3 h-screen bg-white">
       <div className="col-span-1 bg-white p-4 w-[80vw]">
-        {/* show chat people here */}
+        {/* Show chat people here */}
         {userInfo.map((user) => (
-  <div key={user.email}>
-    {user.photos && user.photos.length > 0 ? (
-      <img 
-       className="w-20 h-20 rounded-full object-cover border-2 border-gray-600"
-      src={user.photos[0]} alt={user.username} />
-    ) : (
-      <div></div> // Or a placeholder image
-    )}
-  </div>
-))}
- {Array.isArray(another) && another.length > 0 ? (
-            another.map((imgUrl, index) => (
-              <li key={index} className="">
+          <div key={user.email}>
+            {user.photos && user.photos.length > 0 ? (
+              <>
                 <img
-                  src={imgUrl}
-                  alt={`Liked person ${index + 1}`}
+                  onClick={() => handleNavigate(user.email)}
                   className="w-20 h-20 rounded-full object-cover border-2 border-gray-600"
+                  src={user.photos[0]}
+                 
                 />
-              </li>
-            ))
-          ) : (
-            <p className="text-center text-gray-500">.....</p>
-          )}
-
-
+                <div>{user.username}</div>
+              </>
+            ) : (
+              <div>""</div>
+            )}
+          </div>
+        ))}
+        {Array.isArray(another) && another.length > 0 ? (
+          another.map((imgUrl, index) => (
+            <li key={index} className="">
+              <img
+                src={imgUrl}
+                alt={`Liked person ${index + 1}`}
+                className="w-20 h-20 rounded-full object-cover border-2 border-gray-600"
+              />
+            </li>
+          ))
+        ) : (
+          <p className="text-center text-gray-500">.....</p>
+        )}
       </div>
       <div className="col-span-2 flex flex-col">
-        <div className="flex-1 p-4 border border-gray-300 rounded-lg  shadow-md flex flex-col">
-          <div className="overflow-y-auto h-full">
+        <div className="flex-1 p-4 border border-gray-300 rounded-lg shadow-md flex flex-col">
+          <div className="overflow-y-auto flex-1">
             {messages.map((msg, index) => (
               <div
                 key={index}
@@ -208,14 +225,15 @@ const [another,setAnother]=useState<any[]>([])
                 <div
                   className={`inline-block px-4 py-2 rounded-lg ${
                     msg.fromUser === userEmail
-                      ? "bg-white text-black"
-                      : "bg-pink-500 text-white"
+                      ? "bg-blue-500 text-white"
+                      : "bg-gray-200 text-black"
                   } shadow-md`}
                 >
                   {msg.message}
                 </div>
               </div>
             ))}
+            <div ref={messagesEndRef} />
           </div>
         </div>
         <div className="flex gap-2 mt-2 p-4">

@@ -34,7 +34,7 @@ console.log("email",email);
         }
       );
     }
-console.log("data",findMatches);
+
 
     // Collect all users who liked the current user
     let showAllMatches = [];

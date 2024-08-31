@@ -95,7 +95,7 @@ function Page() {
               </li>
             ))
           ) : (
-            <p className="text-center text-gray-500">No liked people found.</p>
+            <p className="text-center  text-gray-500">No liked people found.</p>
           )}
         </ul>
 )}
