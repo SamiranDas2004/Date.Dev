@@ -1,9 +1,10 @@
-'use client';
+'use client'
 
 import * as React from 'react';
+import Image from 'next/image'; // Import Image from next/image
 import { Card, CardContent } from '../../components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -151,10 +152,11 @@ function CarouselDemo() {
                       <Card className="flex items-center justify-center h-full">
                         <CardContent className="flex flex-col items-center justify-center p-6">
                           <div className="relative w-full h-64">
-                            <img
+                            <Image
                               src={users[currentIndex].photos[photoIndex]}
                               alt={`${users[currentIndex].username}'s photo`}
-                              className="w-full h-full object-cover"
+                              layout="fill"
+                              objectFit="cover"
                             />
                           </div>
                           <div className="text-center mt-4">

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image'; // Import the Image component
 
 export default function SignInComponent() {
   const { data: session, status } = useSession();
@@ -84,7 +85,13 @@ export default function SignInComponent() {
         onClick={() => signIn('github')}
         className="w-full max-w-md h-12 px-3 flex items-center justify-center text-lg font-semibold text-black bg-white rounded-lg border border-gray-300 transition-colors duration-150 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-600"
       >
-        <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg" alt="GitHub Logo" className="w-6 h-6 mr-2" />
+        <Image
+          src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg"
+          alt="GitHub Logo"
+          width={24} // Replace with your preferred width
+          height={24} // Replace with your preferred height
+          className="mr-2"
+        />
         Sign in with GitHub
       </button>
     </div>

@@ -1,8 +1,10 @@
-'use client'
+'use client';
+
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 function Page() {
   const [userInfo, setUserInfo] = useState<any[]>([]);
@@ -16,13 +18,9 @@ function Page() {
       const getMatches = async () => {
         try {
           setLoading(true);
-         // const response = await axios.post("http://localhost:3000/api/showmatches", { email: session.user.email });
           const res = await axios.post("http://localhost:3000/api/getthefuckingmatches", { email: session.user.email });
           setUserInfo(res.data.data); 
-         //  console.log("data of response",response.data);
-        console.log("data of res",res.data);
-          
-         // setUserInfo(response.data.data);
+          console.log("data of res", res.data);
         } catch (error: any) {
           console.log(error);
         } finally {
@@ -54,10 +52,12 @@ function Page() {
               userInfo.map((user) => (
                 <li key={user.email} className="bg-gray-50 p-4 rounded-lg shadow-md flex items-center justify-between">
                   <div className="flex items-center space-x-4">
-                    <img
+                    <Image
                       src={user.photos[0]}
                       alt={user.username}
                       className="w-16 h-16 rounded-full object-cover border-2 border-gray-300"
+                      width={64} // Adjust width as needed
+                      height={64} // Adjust height as needed
                     />
                     <div>
                       <h3 className="text-lg font-medium text-gray-700">{user.username}</h3>

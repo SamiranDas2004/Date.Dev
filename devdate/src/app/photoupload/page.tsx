@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { useSession, signIn, signOut } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image'; // Assuming you're using Next.js Image component
+import Image from 'next/image'; // Import Image component from Next.js
 
 const PhotoUpload = () => {
   const { data: session } = useSession();
@@ -12,10 +12,6 @@ const PhotoUpload = () => {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-
-
-
-
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -54,7 +50,10 @@ const PhotoUpload = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white relative">
       {/* Background Image */}
-      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: 'url(/path-to-your-background-image.jpg)' }}></div>
+      <div
+        className="absolute inset-0 bg-cover bg-center"
+        style={{ backgroundImage: 'url(/path-to-your-background-image.jpg)' }}
+      ></div>
 
       {/* Content Container */}
       <div className="relative z-10 flex flex-col items-center justify-center w-full max-w-lg p-6 bg-gray-800 bg-opacity-80 rounded-lg shadow-lg">
@@ -62,7 +61,13 @@ const PhotoUpload = () => {
         <div className="flex flex-col items-center mb-4">
           <p className="text-xl font-semibold mb-2">Signed in as {session.user.name}</p>
           <div className="relative w-24 h-24 mb-4">
-            <img src={session.user.image || ''} alt="User Avatar"  className="rounded-full" />
+            <Image
+              src={session.user.image || '/default-avatar.png'} // Provide a default image
+              alt="User Avatar"
+              layout="fill" // Use layout="fill" to fill the container
+              objectFit="cover" // Ensure the image covers the container
+              className="rounded-full"
+            />
           </div>
           <button
             onClick={() => signOut()}

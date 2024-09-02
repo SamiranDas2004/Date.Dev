@@ -5,10 +5,10 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export default function Likedperson() {
   const { data: session, status } = useSession();
-  const [accept, setAccept] = useState("accept");
   const [userInfo, setUserInfo] = useState<any[]>([]);
   const router = useRouter();
   const [loading, setLoading] = useState(true); // Loading state
@@ -65,8 +65,6 @@ export default function Likedperson() {
     }
   };
 
-
-
   return (
     <div>
       <div className="overflow-y-auto bg-white w-1/3 h-screen p-4" style={{ maxHeight: '100vh' }}>
@@ -80,10 +78,12 @@ export default function Likedperson() {
           <ul className="space-y-4">
             {userInfo.map((user) => (
               <li key={user.email} className="space-y-2">
-                <img
+                <Image
                   src={user.photos[0]}
                   alt={user.username}
                   className="w-full h-auto mt-2"
+                  width={500} // Adjust the width as needed
+                  height={500} // Adjust the height as needed
                 />
                 <p>{user.username}</p>
                 <div className='flex justify-center items-center'>
