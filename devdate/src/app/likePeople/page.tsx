@@ -11,13 +11,13 @@ export default function Likedperson() {
   const { data: session, status } = useSession();
   const [userInfo, setUserInfo] = useState<any[]>([]);
   const router = useRouter();
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (session?.user?.email) {
       const getMatches = async () => {
         try {
-          setLoading(true); // Start loading
+          setLoading(true);
           const response = await axios.post(
             'http://localhost:3000/api/getMatches',
             { email: session.user.email }
@@ -28,7 +28,7 @@ export default function Likedperson() {
         } catch (error) {
           console.error('Error fetching matches:', error);
         } finally {
-          setLoading(false); // Stop loading
+          setLoading(false);
         }
       };
       getMatches();
@@ -42,8 +42,7 @@ export default function Likedperson() {
         { email: session?.user.email, id: id }
       );
       console.log(response.data);
-
-      // Remove the rejected user from the userInfo state
+      
       setUserInfo((prevUserInfo) => prevUserInfo.filter((user) => user._id !== id));
     } catch (error) {
       console.error('Error rejecting match:', error);
@@ -56,7 +55,7 @@ export default function Likedperson() {
         "http://localhost:3000/api/bothmatches",
         { email: session?.user.email, id: id }
       );
-      const response2=await axios.post("http://localhost:3000/api/showmatchesofmyside",{email:session?.user.email,id:id})
+      const response2 = await axios.post("http://localhost:3000/api/showmatchesofmyside",{email:session?.user.email,id:id})
       console.log(response2.data);
       
       console.log(response.data);
@@ -69,7 +68,7 @@ export default function Likedperson() {
     <div>
       <div className="overflow-y-auto bg-white w-1/3 h-screen p-4" style={{ maxHeight: '100vh' }}>
         <div className="text-center font-bold text-3xl mb-4 shadow-lg">Matches</div>
-
+        
         {loading ? (
           <div className="flex justify-center items-center">
             <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-900"></div>
@@ -78,13 +77,19 @@ export default function Likedperson() {
           <ul className="space-y-4">
             {userInfo.map((user) => (
               <li key={user.email} className="space-y-2">
-                <Image
-                  src={user.photos[0]}
-                  alt={user.username}
-                  className="w-full h-auto mt-2"
-                  width={500} // Adjust the width as needed
-                  height={500} // Adjust the height as needed
-                />
+                {user.photos && user.photos.length > 0 ? (
+                  <Image
+                    src={user.photos[0]}
+                    alt={user.username}
+                    className="w-full h-auto mt-2"
+                    width={500}
+                    height={500}
+                  />
+                ) : (
+                  <div className="w-full h-64 bg-gray-200 flex items-center justify-center">
+                    No photo available
+                  </div>
+                )}
                 <p>{user.username}</p>
                 <div className='flex justify-center items-center'>
                   <button
