@@ -155,8 +155,7 @@ function CarouselDemo() {
                             <Image
                               src={users[currentIndex].photos[photoIndex]}
                               alt={`${users[currentIndex].username}'s photo`}
-                              layout="fill"
-                              objectFit="cover"
+                               className="w-full h-full object-cover"
                             />
                           </div>
                           <div className="text-center mt-4">
