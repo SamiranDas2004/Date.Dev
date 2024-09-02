@@ -52,10 +52,10 @@ export default function Likedperson() {
   const bothMatched = async (id: any) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/bothmatches",
+        "https://date-dev.vercel.app/api/bothmatches",
         { email: session?.user.email, id: id }
       );
-      const response2 = await axios.post("http://localhost:3000/api/showmatchesofmyside",{email:session?.user.email,id:id})
+      const response2 = await axios.post("https://date-dev.vercel.app/api/showmatchesofmyside",{email:session?.user.email,id:id})
       console.log(response2.data);
       
       console.log(response.data);
