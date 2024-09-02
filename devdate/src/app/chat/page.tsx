@@ -1,5 +1,5 @@
- "use client";
-import { useEffect, useRef, useState } from "react";
+"use client";
+import { useEffect, useRef, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { socket } from "../../utils/socket";
 import axios from "axios";
@@ -13,7 +13,7 @@ interface Message {
   timestamp: Date;
 }
 
-const Chat: React.FC = () => {
+const ChatContent: React.FC = () => {
   const { data: session, status } = useSession();
   const searchParams = useSearchParams();
   const userEmail = searchParams.get("userEmail");
@@ -21,7 +21,6 @@ const Chat: React.FC = () => {
   const [userInfo, setUserInfo] = useState<any[]>([]);
   const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
-  const [another, setAnother] = useState<any[]>([]);
   const router = useRouter();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -226,6 +225,14 @@ const Chat: React.FC = () => {
         </div>
       </div>
     </div>
+  );
+};
+
+const Chat: React.FC = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ChatContent />
+    </Suspense>
   );
 };
 
