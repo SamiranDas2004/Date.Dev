@@ -157,16 +157,16 @@ const Chat: React.FC = () => {
     if (status === "authenticated" && session?.user?.email) {
       const Showpeople = async () => {
         try {
-          const response = await axios.post(
-            "http://localhost:3000/api/showmatches",
-            { email: session.user.email }
-          );
+          // const response = await axios.post(
+          //   "http://localhost:3000/api/showmatches",
+          //   { email: session.user.email }
+          // );
           const res = await axios.post(
             "http://localhost:3000/api/getthefuckingmatches",
             { email: session.user.email }
           );
-          setUserInfo(response.data.data);
-          setAnother(res.data.data);
+          //setUserInfo(response.data.data);
+          setUserInfo(res.data.data);
           console.log("data",res.data.username);
           
         } catch (error) {
@@ -189,7 +189,7 @@ const Chat: React.FC = () => {
                   onClick={() => handleNavigate(user.email)}
                   className="w-20 h-20 rounded-full object-cover border-2 border-gray-600"
                   src={user.photos[0]}
-                 
+                 alt={user.username}
                 />
                 <div>{user.username}</div>
               </>
@@ -198,19 +198,7 @@ const Chat: React.FC = () => {
             )}
           </div>
         ))}
-        {Array.isArray(another) && another.length > 0 ? (
-          another.map((imgUrl, index) => (
-            <li key={index} className="">
-              <img
-                src={imgUrl}
-                alt={`Liked person ${index + 1}`}
-                className="w-20 h-20 rounded-full object-cover border-2 border-gray-600"
-              />
-            </li>
-          ))
-        ) : (
-          <p className="text-center text-gray-500">.....</p>
-        )}
+     
       </div>
       <div className="col-span-2 flex flex-col">
         <div className="flex-1 p-4 border border-gray-300 rounded-lg shadow-md flex flex-col">

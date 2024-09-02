@@ -12,6 +12,7 @@ export interface User extends Document {
   likeby: mongoose.Types.ObjectId[];
   dislikeby: string[];
   matches: string[];
+  likeByMe:string[]
 }
 
 const UserSchema: Schema<User> = new Schema({
@@ -58,6 +59,7 @@ const UserSchema: Schema<User> = new Schema({
     },
   ],
   matches: [String],
+  likeByMe:[String]
 });
 
 const UserModel =

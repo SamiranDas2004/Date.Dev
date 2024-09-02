@@ -1,28 +1,23 @@
 import dbConnect from "@/lib/dbConnect";
-import MatchesModel from "@/models/matches";
-import UserModel from "@/models/user";
-import { NextResponse } from "next/server";
+import UserModel, { User } from "@/models/user";
+import { NextRequest, NextResponse } from "next/server";
+import mongoose from "mongoose";
 
-export async function POST(req: NextResponse) {
+export async function POST(req: NextRequest) {
   await dbConnect();
 
   try {
     const { email, id } = await req.json();
+    console.log(email, id);
 
     // Find the user by email and the target user by ID
-    const findUser = await UserModel.findOne({ email });
-    const findID = await UserModel.findById(id);
+    const findUser: User | null = await UserModel.findOne({ email });
+    const findID: User | null = await UserModel.findById(id);
 
     if (!findUser) {
-      return NextResponse.json({
-        message: "User is not found",
-      });
-    }
-
-    if (!findID) {
       return NextResponse.json(
         {
-          message: "No user found",
+          message: "User not found",
         },
         {
           status: 400,
@@ -30,45 +25,59 @@ export async function POST(req: NextResponse) {
       );
     }
 
-    // Check if the liked user is in the likeBy array
-    let likePeople = [...findUser.likeby];
-    for (let i = 0; i < likePeople.length; i++) {
-      if (id == likePeople[i].toString()) {
-        // Save the match in MatchesModel
-        const newMatch = new MatchesModel({
-          likeBy: findUser._id,
-          likeTO: findID._id,
-        });
-        await newMatch.save();
-
-        return NextResponse.json(
-          {
-            message: "Match saved successfully",
-            match: newMatch,
-          },
-          {
-            status: 200,
-          }
-        );
-      }
+    if (!findID) {
+      return NextResponse.json(
+        {
+          message: "No user found with the provided ID",
+        },
+        {
+          status: 400,
+        }
+      );
     }
+
+    // Ensure _id is defined and is of the correct type
+    const userId = findUser._id?.toString();
+    const anotherId = findID._id?.toString();
+
+    if (userId && anotherId) {
+      // Add userId to findID's matches and anotherId to findUser's likeByMe
+      findID.matches.push(userId);
+      findUser.likeByMe.push(anotherId);
+    } else {
+      return NextResponse.json(
+        {
+          message: "User IDs are undefined",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    // Save the changes
+    await findUser.save();
+    await findID.save();
 
     return NextResponse.json(
       {
-        message: "No match found in likeBy array",
+        data: findID,
+        message: "Matching successful",
       },
       {
-        status: 400,
+        status: 200,
       }
     );
   } catch (error: any) {
-    console.error("Error in both matching route:", error);
+    console.error("Error in matching route:", error);
     return NextResponse.json(
       {
         success: false,
         message: "Something went wrong",
       },
-      { status: 400 }
+      {
+        status: 500, // Changed to 500 for server errors
+      }
     );
   }
 }

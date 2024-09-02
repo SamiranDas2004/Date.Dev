@@ -16,12 +16,13 @@ function Page() {
       const getMatches = async () => {
         try {
           setLoading(true);
-          const response = await axios.post("http://localhost:3000/api/showmatches", { email: session.user.email });
+         // const response = await axios.post("http://localhost:3000/api/showmatches", { email: session.user.email });
           const res = await axios.post("http://localhost:3000/api/getthefuckingmatches", { email: session.user.email });
-          setMyInfo(res.data.data); 
-          console.log(response.data);
+          setUserInfo(res.data.data); 
+         //  console.log("data of response",response.data);
+        console.log("data of res",res.data);
           
-          setUserInfo(response.data.data);
+         // setUserInfo(response.data.data);
         } catch (error: any) {
           console.log(error);
         } finally {
@@ -74,32 +75,7 @@ function Page() {
       </div>
 
       {/* People You Like Section */}
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-3xl mt-6">
-        <h2 className="text-2xl font-semibold mb-6 text-center text-gray-800">
-          People You Like
-        </h2>
-        {loading ? (
-          <div className="flex justify-center items-center">
-            <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-900"></div>
-          </div>
-        ) : (
-        <ul className="space-y-6">
-          {Array.isArray(myInfo) && myInfo.length > 0 ? (
-            myInfo.map((imgUrl, index) => (
-              <li key={index} className="flex justify-center">
-                <img
-                  src={imgUrl}
-                  alt={`Liked person ${index + 1}`}
-                  className="w-32 h-32 object-cover rounded-full border-2 border-gray-300"
-                />
-              </li>
-            ))
-          ) : (
-            <p className="text-center  text-gray-500">No liked people found.</p>
-          )}
-        </ul>
-)}
-      </div>
+    
     </div>
   );
 }
