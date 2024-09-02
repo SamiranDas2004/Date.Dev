@@ -146,38 +146,38 @@ function CarouselDemo() {
           <div className="relative z-10 flex flex-col items-center justify-center w-full p-4 rounded-lg shadow-lg">
             {users.length > 0 && (
               <Carousel className="w-full">
-                <CarouselContent>
-                  <CarouselItem key={users[currentIndex].email}>
-                    <div className="p-1">
-                      <Card className="flex items-center justify-center h-full">
-                        <CardContent className="flex flex-col items-center justify-center p-6">
-                          <div className="relative w-full h-64">
-                            <Image
-                              src={users[currentIndex].photos[photoIndex]}
-                              alt={`${users[currentIndex].username}'s photo`}
-                               className="w-full h-full object-cover"
-                            />
-                          </div>
-                          <div className="text-center mt-4">
-                            <h3 className="text-xl font-bold">
-                              {users[currentIndex].username}
-                            </h3>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </CarouselItem>
-                </CarouselContent>
-                <CarouselPrevious
-                  className=' hover:'
-                  onClick={handlePreviousPhoto}
-                  disabled={photoIndex === 0}
-                />
-                <CarouselNext
-                  onClick={handleNextPhoto}
-                  disabled={photoIndex === users[currentIndex].photos.length - 1}
-                />
-              </Carousel>
+              <CarouselContent>
+                <CarouselItem key={users[currentIndex].email}>
+                  <div className="p-1">
+                    <Card className="flex items-center justify-center h-full">
+                      <CardContent className="flex flex-col items-center justify-center p-6">
+                        <div className="relative w-full h-64">
+                          <img
+                            src={users[currentIndex].photos[photoIndex]}
+                            alt={`${users[currentIndex].username}'s photo`}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="text-center mt-4">
+                          <h3 className="text-xl font-bold">
+                            {users[currentIndex].username}
+                          </h3>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </CarouselItem>
+              </CarouselContent>
+              <CarouselPrevious
+                className=' hover:'
+                onClick={handlePreviousPhoto}
+                disabled={photoIndex === 0}
+              />
+              <CarouselNext
+                onClick={handleNextPhoto}
+                disabled={photoIndex === users[currentIndex].photos.length - 1}
+              />
+            </Carousel>
             )}
 
             <div className="mt-4 flex space-x-4">
