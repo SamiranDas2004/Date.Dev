@@ -56,9 +56,6 @@ export async function POST(req: NextRequest) {
     }
 
     // Save the changes
-    if (findUser.likeby.includes(id)) {
-      findUser.likeby = findUser.likeby.filter((likeId) => !likeId.equals(id));
-    }
     await findUser.save();
     await findID.save();
 
@@ -77,6 +74,18 @@ export async function POST(req: NextRequest) {
       {
         success: false,
         message: "Something went wrong",
+
+
+
+
+
+
+
+
+
+
+
+        
       },
       {
         status: 500, // Changed to 500 for server errors
