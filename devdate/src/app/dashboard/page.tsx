@@ -159,10 +159,15 @@ function CarouselDemo() {
                           />
                         </div>
                         <div className="text-center mt-4">
-                          <h3 className="text-xl font-bold">
+                          <h3 className="text-xl font-bold font-serif">
                             {users[currentIndex].username}
                           </h3>
                         </div>
+
+
+
+
+
                       </CardContent>
                     </Card>
                   </div>
