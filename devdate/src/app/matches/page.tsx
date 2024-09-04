@@ -18,7 +18,7 @@ function Page() {
       const getMatches = async () => {
         try {
           setLoading(true);
-          const res = await axios.post("https://date-dev.vercel.app/api/getthefuckingmatches", { email: session.user.email });
+          const res = await axios.post("https://date-dev-samiran-das-projects.vercel.app/api/getthefuckingmatches", { email: session.user.email });
           setUserInfo(res.data.data); 
           console.log("data of res", res.data);
         } catch (error: any) {

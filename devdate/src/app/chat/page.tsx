@@ -50,7 +50,7 @@ const ChatContent: React.FC = () => {
     const fetchMessages = async () => {
       try {
         const response = await axios.post(
-          "https://date-dev.vercel.app/api/recivesavedmassages",
+          "https://date-dev-samiran-das-projects.vercel.app/api/recivesavedmassages",
           {
             fromUser: userEmail,
             toUser: targetUserEmail,
@@ -130,7 +130,7 @@ const ChatContent: React.FC = () => {
 
       try {
         const response = await axios.post(
-          "https://date-dev.vercel.app/savemessages",
+          "https://date-dev-samiran-das-projects.vercel.app/savemessages",
           newMessage
         );
         console.log(response.data);
@@ -147,7 +147,7 @@ const ChatContent: React.FC = () => {
       const Showpeople = async () => {
         try {
           const res = await axios.post(
-            "https://date-dev.vercel.app/getthefuckingmatches",
+            "https://date-dev-samiran-das-projects.vercel.app/getthefuckingmatches",
             { email: session.user.email }
           );
           setUserInfo(res.data.data);

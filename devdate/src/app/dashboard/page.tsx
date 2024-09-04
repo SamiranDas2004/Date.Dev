@@ -23,13 +23,13 @@ function CarouselDemo() {
   
     try {
       // Fetch data from the API and store it in a variable
-      const response = await axios.post('https://date-dev.vercel.app/dashboard/api/findgenders', { gender: value });
+      const response = await axios.post('https://date-dev-samiran-das-projects.vercel.app/dashboard/api/findgenders', { gender: value });
       console.log('Response data from findgenders:', response.data);
   
  console.log(response.data,session?.user.email);
  
   
-      const result = await axios.post('https://date-dev.vercel.app/dashboard/api/notinclude', {
+      const result = await axios.post('https://date-dev-samiran-das-projects.vercel.app/dashboard/api/notinclude', {
         email: session?.user.email,
         data: response.data.data // Ensure this is an array
       });
@@ -79,13 +79,13 @@ function CarouselDemo() {
       const emailId = session?.user.email;
       console.log(emailId);
 
-      const response = await axios.post('https://date-dev.vercel.app/dashboard/api/getUserId', {
+      const response = await axios.post('https://date-dev-samiran-das-projects.vercel.app/dashboard/api/getUserId', {
         email: emailId,
       });
       const userId = response.data.id;
       console.log(userId);
 
-      const likeResponse = await axios.post('https://date-dev.vercel.app/dashboard/api/likeby', {
+      const likeResponse = await axios.post('https://date-dev-samiran-das-projects.vercel.app/dashboard/api/likeby', {
         userId: userId,
         email: email,
       });
@@ -105,7 +105,7 @@ function CarouselDemo() {
     console.log(id, email);
 
     try {
-      const response = await axios.post('https://date-dev.vercel.app/dashboard/api/dislike', {
+      const response = await axios.post('https://date-dev-samiran-das-projects.vercel.app/dashboard/api/dislike', {
         email,
         userId: id,
       });
