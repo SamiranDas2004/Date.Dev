@@ -19,7 +19,7 @@ export default function Likedperson() {
         try {
           setLoading(true);
           const response = await axios.post(
-            'http://localhost:3000/api/getMatches',
+            'https://date-dev.vercel.app/api/getMatches',
             { email: session.user.email }
           );
           
@@ -38,7 +38,7 @@ export default function Likedperson() {
   const reject = async (id: any) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/reject",
+        "https://date-dev.vercel.app/api/reject",
         { email: session?.user.email, id: id }
       );
       console.log(response.data);
