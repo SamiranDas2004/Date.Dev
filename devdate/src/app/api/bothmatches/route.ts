@@ -74,10 +74,6 @@ export async function POST(req: NextRequest) {
       {
         success: false,
         message: "Something went wrong",
-
-
-
-        
       },
       {
         status: 500, // Changed to 500 for server errors

@@ -1,5 +1,5 @@
 import { io } from 'socket.io-client';
 
-export const socket = io('https://date-dev.vercel.app', {
+export const socket = io('http://localhost:3001', {
   transports: ['websocket', 'polling'],
 });
