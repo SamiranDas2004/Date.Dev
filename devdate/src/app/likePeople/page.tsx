@@ -19,7 +19,7 @@ export default function Likedperson() {
         try {
           setLoading(true); // Start loading
           const response = await axios.post(
-            'http://localhost:3000/api/getMatches',
+            'https://date-dev.vercel.app/dashboard/api/getMatches',
             { email: session.user.email }
           );
           
@@ -38,7 +38,7 @@ export default function Likedperson() {
   const reject = async (id: any) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/reject",
+        "https://date-dev.vercel.app/dashboard/api/reject",
         { email: session?.user.email, id: id }
       );
       console.log(response.data);
@@ -53,10 +53,10 @@ export default function Likedperson() {
   const bothMatched = async (id: any) => {
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/bothmatches",
+        "https://date-dev.vercel.app/dashboard/api/bothmatches",
         { email: session?.user.email, id: id }
       );
-      const response2=await axios.post("http://localhost:3000/api/showmatchesofmyside",{email:session?.user.email,id:id})
+      const response2=await axios.post("https://date-dev.vercel.app/dashboard/api/showmatchesofmyside",{email:session?.user.email,id:id})
       console.log(response2.data);
       
       console.log(response.data);

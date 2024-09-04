@@ -8,7 +8,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-// import Likedperson from '../likePeople/page';
+import Likedperson from '../likePeople/page';
 
 function CarouselDemo() {
   const { data: session, status } = useSession();
@@ -23,13 +23,13 @@ function CarouselDemo() {
   
     try {
       // Fetch data from the API and store it in a variable
-      const response = await axios.post('https://date-dev.vercel.app/api/findgenders', { gender: value });
+      const response = await axios.post('https://date-dev.vercel.app/dashboard/api/findgenders', { gender: value });
       console.log('Response data from findgenders:', response.data);
   
  console.log(response.data,session?.user.email);
  
   
-      const result = await axios.post('https://date-dev.vercel.app/api/notinclude', {
+      const result = await axios.post('https://date-dev.vercel.app/dashboard/api/notinclude', {
         email: session?.user.email,
         data: response.data.data // Ensure this is an array
       });
@@ -79,13 +79,13 @@ function CarouselDemo() {
       const emailId = session?.user.email;
       console.log(emailId);
 
-      const response = await axios.post('https://date-dev.vercel.app/api/getUserId', {
+      const response = await axios.post('https://date-dev.vercel.app/dashboard/api/getUserId', {
         email: emailId,
       });
       const userId = response.data.id;
       console.log(userId);
 
-      const likeResponse = await axios.post('https://date-dev.vercel.app/api/likeby', {
+      const likeResponse = await axios.post('https://date-dev.vercel.app/dashboard/api/likeby', {
         userId: userId,
         email: email,
       });
@@ -105,7 +105,7 @@ function CarouselDemo() {
     console.log(id, email);
 
     try {
-      const response = await axios.post('https://date-dev.vercel.app/api/dislike', {
+      const response = await axios.post('https://date-dev.vercel.app/dashboard/api/dislike', {
         email,
         userId: id,
       });
@@ -124,7 +124,7 @@ function CarouselDemo() {
   return (
     <div className='grid grid-cols-3'>
       <div className='col-span-1 w-[70vw]'>
-        {/* <Likedperson /> */}
+        <Likedperson />
       </div>
       <div className="flex items-center justify-center top-0 bg-white relative col-span-2">
         <div className="relative flex flex-col items-center justify-center w-full max-w-md p-6 bg-gradient-to-r from-white to-blue-400 rounded-lg shadow-lg z-10">
@@ -146,43 +146,39 @@ function CarouselDemo() {
           <div className="relative z-10 flex flex-col items-center justify-center w-full p-4 rounded-lg shadow-lg">
             {users.length > 0 && (
               <Carousel className="w-full">
-              <CarouselContent>
-                <CarouselItem key={users[currentIndex].email}>
-                  <div className="p-1">
-                    <Card className="flex items-center justify-center h-full">
-                      <CardContent className="flex flex-col items-center justify-center p-6">
-                        <div className="relative w-full h-64">
-                          <Image
-                            src={users[currentIndex].photos[photoIndex]}
-                            alt={`${users[currentIndex].username}'s photo`}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                        <div className="text-center mt-4">
-                          <h3 className="text-xl font-bold font-serif">
-                            {users[currentIndex].username}
-                          </h3>
-                        </div>
-
-
-
-
-
-                      </CardContent>
-                    </Card>
-                  </div>
-                </CarouselItem>
-              </CarouselContent>
-              <CarouselPrevious
-                className=' hover:'
-                onClick={handlePreviousPhoto}
-                disabled={photoIndex === 0}
-              />
-              <CarouselNext
-                onClick={handleNextPhoto}
-                disabled={photoIndex === users[currentIndex].photos.length - 1}
-              />
-            </Carousel>
+                <CarouselContent>
+                  <CarouselItem key={users[currentIndex].email}>
+                    <div className="p-1">
+                      <Card className="flex items-center justify-center h-full">
+                        <CardContent className="flex flex-col items-center justify-center p-6">
+                          <div className="relative w-full h-64">
+                            <Image
+                              src={users[currentIndex].photos[photoIndex]}
+                              alt={`${users[currentIndex].username}'s photo`}
+                              layout="fill"
+                              objectFit="cover"
+                            />
+                          </div>
+                          <div className="text-center mt-4">
+                            <h3 className="text-xl font-bold">
+                              {users[currentIndex].username}
+                            </h3>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </CarouselItem>
+                </CarouselContent>
+                <CarouselPrevious
+                  className=' hover:'
+                  onClick={handlePreviousPhoto}
+                  disabled={photoIndex === 0}
+                />
+                <CarouselNext
+                  onClick={handleNextPhoto}
+                  disabled={photoIndex === users[currentIndex].photos.length - 1}
+                />
+              </Carousel>
             )}
 
             <div className="mt-4 flex space-x-4">
